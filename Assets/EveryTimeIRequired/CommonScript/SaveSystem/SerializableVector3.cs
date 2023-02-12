@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// 示例：序列化Vector3
 /// </summary>
-namespace nsG.Saving
+namespace Common.SavingSystem
 {
     [System.Serializable]
     public class SerializableVector3

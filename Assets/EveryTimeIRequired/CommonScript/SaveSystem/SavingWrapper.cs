@@ -1,4 +1,3 @@
-using RPG.Saving;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -6,14 +5,12 @@ using UnityEngine;
 /// <summary>
 /// 存储系统包装器示例
 /// </summary>
-namespace ns.SceneMangement
+namespace Common.SavingSystem.Sample
 {
     public class SavingWrapper : MonoBehaviour
     {
         private const string defaultSaveFile = "save";
         private SavingSystem savingSystem;
-
-        [SerializeField] private float fadeInTime = 1f;
         private void Awake()
         {
             savingSystem = GetComponent<SavingSystem>();

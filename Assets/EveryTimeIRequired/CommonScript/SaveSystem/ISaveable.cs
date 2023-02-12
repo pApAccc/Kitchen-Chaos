@@ -1,4 +1,4 @@
-namespace ns.Saving
+namespace Common.SavingSystem
 {
     public interface ISaveable
     {

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using RPG.Core;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
@@ -8,7 +7,7 @@ using UnityEngine.AI;
 ///<summary>
 ///对象需要继承ISaveable接口，才能实现存储和读取
 ///</summary>
-namespace ns.Saving
+namespace Common.SavingSystem
 {
     [ExecuteAlways]
     public class SaveableEntity : MonoBehaviour
