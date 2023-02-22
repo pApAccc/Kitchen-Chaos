@@ -11,23 +11,43 @@ namespace ns
 {
     public class CuttingCounter : BaseCounter, IHasProgress
     {
-        [SerializeField] private KitchenObjectRecipeSO[] kitchenObjectRecipeSOArray;
-        private int cuttingProgress;
-
+        public static event EventHandler OnAnyCut;
         public event EventHandler OnCut;
         public event EventHandler<IHasProgress.OnProgressBarChangedEventArgs> OnProgressBarChanged;
+
+        [SerializeField] private KitchenObjectRecipeSO[] kitchenObjectRecipeSOArray;
+
+        private int cuttingProgress;
+
+        public static new void ResetStaticData()
+        {
+            OnAnyCut = null;
+        }
+
         public override void Interact(Player player)
         {
             if (HasKitchenObject())
             {
+                //都有物体
+                //查看player拿的是不是Plate
                 if (player.HasKitchenObject())
                 {
+                    if (player.GetKitchenObject().TryGetPlate(out PlateObject plateObject))
+                    {
+                        if (plateObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                        {
+                            GetKitchenObject().DestroySelf();
+                        }
+                        else
+                        {
+                            //plate上已经拥有此物体
+                        }
+                    }
 
                 }
                 else
                 {
                     GetKitchenObject().SetKitchenObjectParent(player);
-
                 }
             }
             else
@@ -53,6 +73,7 @@ namespace ns
             }
         }
 
+
         public override void InteractAlternate(Player player)
         {
             if (HasKitchenObject())
@@ -63,6 +84,7 @@ namespace ns
                 {
                     cuttingProgress++;
                     OnCut?.Invoke(this, EventArgs.Empty);
+                    OnAnyCut?.Invoke(this, EventArgs.Empty);
                     OnProgressBarChanged?.Invoke(this, new IHasProgress.OnProgressBarChangedEventArgs
                     {
                         progressNormalized = (float)cuttingProgress / kitchenObjectInput.cuttingProgressMax

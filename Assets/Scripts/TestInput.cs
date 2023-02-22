@@ -12,20 +12,11 @@ namespace ns
 {
     public class TestInput : MonoBehaviour
     {
-        PlayerInput inputActions;
-        [SerializeField] Transform player;
-
-
-        private void Awake()
-        {
-            inputActions = new PlayerInput();
-            inputActions.Player.Enable();
-
-        }
-        private void Update()
+        private void Start()
         {
 
         }
+
 
     }
 }

@@ -69,10 +69,6 @@ namespace ns
                         break;
                     case State.Fired:
                         buringTimer += Time.deltaTime;
-                        OnProgressBarChanged?.Invoke(this, new IHasProgress.OnProgressBarChangedEventArgs
-                        {
-                            progressNormalized = buringTimer / kitchenBuringRecipeSO.buringTimeMax
-                        });
 
                         if (buringTimer > kitchenBuringRecipeSO.buringTimeMax)
                         {
@@ -82,6 +78,11 @@ namespace ns
                             state = State.Burned;
                             OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = state });
                         }
+
+                        OnProgressBarChanged?.Invoke(this, new IHasProgress.OnProgressBarChangedEventArgs
+                        {
+                            progressNormalized = buringTimer / kitchenBuringRecipeSO.buringTimeMax
+                        });
                         break;
                     case State.Burned:
                         break;
@@ -93,9 +94,28 @@ namespace ns
         {
             if (HasKitchenObject())
             {
+                //查看player拿的是不是Plate
                 if (player.HasKitchenObject())
                 {
+                    if (player.GetKitchenObject().TryGetPlate(out PlateObject plateObject))
+                    {
+                        if (plateObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                        {
+                            GetKitchenObject().DestroySelf();
 
+                            state = State.Idle;
+                            OnStateChanged?.Invoke(this, new OnStateChangedEventArgs { state = state });
+
+                            OnProgressBarChanged?.Invoke(this, new IHasProgress.OnProgressBarChangedEventArgs
+                            {
+                                progressNormalized = 0
+                            });
+                        }
+                        else
+                        {
+                            //plate上已经拥有此物体
+                        }
+                    }
                 }
                 else
                 {
@@ -154,6 +174,8 @@ namespace ns
             }
             return null;
         }
+
+        public bool IsFired() => state == State.Fired;
 
     }
 }

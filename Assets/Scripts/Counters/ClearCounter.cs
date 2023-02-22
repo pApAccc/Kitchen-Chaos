@@ -35,7 +35,33 @@ namespace ns
                 else
                 {
                     //都有物体
-                    return;
+                    //查看player拿的是不是Plate
+                    if (player.GetKitchenObject().TryGetPlate(out PlateObject playerPlateObject))
+                    {
+                        if (playerPlateObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                        {
+                            GetKitchenObject().DestroySelf();
+                        }
+                        else
+                        {
+                            //plate上已经拥有此物体
+                        }
+                    }
+                    //查看ClearCounter上的是不是Plate
+                    else
+                    {
+                        if (GetKitchenObject().TryGetPlate(out playerPlateObject))
+                        {
+                            if (playerPlateObject.TryAddIngredient(player.GetKitchenObject().GetKitchenObjectSO()))
+                            {
+                                player.GetKitchenObject().DestroySelf();
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    }
                 }
             }
         }

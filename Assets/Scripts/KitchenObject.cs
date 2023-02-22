@@ -38,6 +38,25 @@ namespace ns
             Destroy(gameObject);
         }
 
+        /// <summary>
+        /// 尝试将KitchenObject转化为PlateObject
+        /// </summary>
+        /// <param name="plateObject"></param>
+        /// <returns></returns>
+        public bool TryGetPlate(out PlateObject plateObject)
+        {
+            if (this is PlateObject)
+            {
+                plateObject = (PlateObject)this;
+                return true;
+            }
+            else
+            {
+                plateObject = null;
+                return false;
+            }
+        }
+
         public static KitchenObject SpwanKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
         {
             Transform kitchenObjectInstance = Instantiate(kitchenObjectSO.prefab);
@@ -46,6 +65,8 @@ namespace ns
 
             return kitchenObject;
         }
+
+
 
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 
+/// UI看向Camera
 /// </summary>
 namespace ns
 {

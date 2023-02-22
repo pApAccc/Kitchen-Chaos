@@ -13,6 +13,7 @@ namespace ns
     {
         public static Player Instance { get; private set; }
 
+        public event EventHandler OnPickSomething;
         public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
         public class OnSelectedCounterChangedEventArgs : EventArgs
         {
@@ -40,7 +41,7 @@ namespace ns
 
         private void GameInput_OnCutting(object sender, EventArgs e)
         {
-            if (selectedCounter != null)
+            if (selectedCounter != null && GameManager.Instance.IsGamePlaying())
             {
                 selectedCounter.InteractAlternate(this);
             }
@@ -49,7 +50,7 @@ namespace ns
         private void GameInput_OnInteract(object sender, EventArgs e)
         {
             //处理当玩家按下按钮时的counter逻辑
-            if (selectedCounter != null)
+            if (selectedCounter != null && GameManager.Instance.IsGamePlaying())
             {
                 selectedCounter.Interact(this);
             }
@@ -77,7 +78,7 @@ namespace ns
             {
                 //尝试在x轴上移动
                 Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
-                canMove = moveDir.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
+                canMove = (moveDir.x < -.5f || moveDir.x > .5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
 
                 if (canMove)
                 {
@@ -87,7 +88,7 @@ namespace ns
                 {
                     //尝试在z轴上移动
                     Vector3 moveDirZ = new Vector3(0, 0, moveDir.z).normalized;
-                    canMove = moveDir.z != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance);
+                    canMove = (moveDir.z < -.5f || moveDir.z > .5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance);
 
                     if (canMove)
                     {
@@ -97,7 +98,10 @@ namespace ns
             }
 
             if (canMove)
+            {
                 transform.position += moveDir.normalized * Time.deltaTime * moveSpeed;
+            }
+
             if (isWalking)
                 transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime * moveSpeed);
 
@@ -144,6 +148,9 @@ namespace ns
         public void SetKitchenObject(KitchenObject kitchenObject)
         {
             this.kitchenObject = kitchenObject;
+
+            if (kitchenObject != null)
+                OnPickSomething?.Invoke(this, EventArgs.Empty);
         }
 
         public Transform GetHoldPointTransform()
@@ -165,5 +172,7 @@ namespace ns
         {
             return kitchenObject != null;
         }
+
+        public bool IsWalking() => isWalking;
     }
 }

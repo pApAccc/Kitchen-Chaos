@@ -10,6 +10,11 @@ namespace Common.SavingSystem
     public class SavingSystem : MonoBehaviour
     {
         private string lastSceneBuildIndex = "lastSceneBuildIndex";
+        /// <summary>
+        /// 将最后的场景存储起来并命名为lastSceneBuildIndex
+        /// </summary>
+        /// <param name="saveFile"></param>
+        /// <returns></returns>
         public IEnumerator LoadLastScene(string saveFile)
         {
             Dictionary<string, object> state = LoadFile(saveFile);
@@ -66,12 +71,12 @@ namespace Common.SavingSystem
         private void SaveFile(string saveFile, object state)
         {
             string path = GetPathFromSaveFile(saveFile);
-            print("Saving to " + path);
             using (FileStream stream = File.Open(path, FileMode.Create))
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(stream, state);
             }
+            print("Saving to " + path);
         }
 
         /// <summary>
