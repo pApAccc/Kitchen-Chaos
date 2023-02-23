@@ -41,7 +41,6 @@ namespace ns
                 {
                     showingUI.SetActive(false);
                     showingUI = null;
-                    autoCloseUITimer = autoCloseUITimerMax;
                 }
             }
         }
@@ -61,6 +60,8 @@ namespace ns
             gameObjectUI.gameObject.SetActive(true);
             animator.SetTrigger("Show");
             showingUI = gameObjectUI;
+
+            autoCloseUITimer = autoCloseUITimerMax;
         }
 
     }
