@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -9,9 +10,9 @@ using UnityEngine.Rendering;
 /// </summary>
 namespace ns
 {
-    public class Player : MonoBehaviour, IKitchenObjectParent
+    public class Player : NetworkBehaviour, IKitchenObjectParent
     {
-        public static Player Instance { get; private set; }
+        //public static Player Instance { get; private set; }
 
         public event EventHandler OnPickSomething;
         public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
@@ -31,7 +32,7 @@ namespace ns
 
         private void Awake()
         {
-            Instance = this;
+            //Instance = this;
         }
         private void Start()
         {
@@ -58,6 +59,8 @@ namespace ns
 
         private void Update()
         {
+            if (!IsOwner) return;
+
             HandleMOvement();
             HandleInteract();
         }
