@@ -25,7 +25,7 @@ namespace ns
         private float waittingToStartTimer = 1;
         private float countDownToStartTimer = 3;
         private float gamePlayTimer;
-        private float gamePlayTimerMax = 180;
+        private float gamePlayTimerMax = 600;
         private bool isGamePause = false;
         private void Awake()
         {

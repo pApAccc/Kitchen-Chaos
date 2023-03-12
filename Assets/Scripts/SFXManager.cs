@@ -23,7 +23,7 @@ namespace ns
             DeliveryManager.Instance.OnWaittingRecipeSuccessed += DeliveryManager_OnWaittingRecipeSuccessed;
             DeliveryManager.Instance.OnWaittingRecipeFailed += DeliveryManager_OnWaittingRecipeFailed;
             CuttingCounter.OnAnyCut += CuttingCounter_OnAnyCut;
-            // Player.Instance.OnPickSomething += PlayerOnPickSomething;
+            Player.OnAnyPlayerPickupSomething += PlayerOnPickSomething;
             BaseCounter.OnAnyObjectPlacedHere += BaseCounter_OnAnyObjectPlacedHere;
             TrashCounter.OnAnyObjectTrashed += TrashCounter_OnAnyObjectTrashed;
             PlayerSound.OnPlayerMoving += PlayerSound_OnPlayerMoving;
@@ -46,7 +46,7 @@ namespace ns
 
         private void PlayerOnPickSomething(object sender, EventArgs e)
         {
-            // PlaySound(audioClipRefsSO.object_pickup, Camera.main.transform.position);
+            PlaySound(audioClipRefsSO.object_pickup, Camera.main.transform.position);
         }
 
         private void CuttingCounter_OnAnyCut(object sender, EventArgs e)

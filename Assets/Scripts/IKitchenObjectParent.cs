@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
@@ -14,5 +15,7 @@ namespace ns
         KitchenObject GetKitchenObject();
         void ClearKitchenObject();
         bool HasKitchenObject();
+
+        public NetworkObject GetNetworkObject();
     }
 }

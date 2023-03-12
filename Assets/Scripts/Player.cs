@@ -12,7 +12,9 @@ namespace ns
 {
     public class Player : NetworkBehaviour, IKitchenObjectParent
     {
-        //public static Player Instance { get; private set; }
+        public static event EventHandler OnAnyPlayerSpawned;
+        public static event EventHandler OnAnyPlayerPickupSomething;
+        public static Player LocalInstance { get; private set; }
 
         public event EventHandler OnPickSomething;
         public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
@@ -30,10 +32,7 @@ namespace ns
         [SerializeField] private PlayerAnimationController animatorController;
         [SerializeField] private Transform pickupPoint;
 
-        private void Awake()
-        {
-            //Instance = this;
-        }
+
         private void Start()
         {
             GameInput.Instance.OnInteract += GameInput_OnInteract;
@@ -55,6 +54,15 @@ namespace ns
             {
                 selectedCounter.Interact(this);
             }
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            if (IsOwner)
+            {
+                LocalInstance = this;
+            }
+            OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
         }
 
         private void Update()
@@ -153,7 +161,10 @@ namespace ns
             this.kitchenObject = kitchenObject;
 
             if (kitchenObject != null)
+            {
                 OnPickSomething?.Invoke(this, EventArgs.Empty);
+                OnAnyPlayerPickupSomething?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public Transform GetHoldPointTransform()
@@ -177,5 +188,15 @@ namespace ns
         }
 
         public bool IsWalking() => isWalking;
+
+        public static void ResetStaticData()
+        {
+            OnAnyPlayerSpawned = null;
+        }
+
+        public NetworkObject GetNetworkObject()
+        {
+            return NetworkObject;
+        }
     }
 }

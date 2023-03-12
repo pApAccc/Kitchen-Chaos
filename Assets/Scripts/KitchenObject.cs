@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
@@ -7,7 +8,7 @@ using UnityEngine;
 /// </summary>
 namespace ns
 {
-    public class KitchenObject : MonoBehaviour
+    public class KitchenObject : NetworkBehaviour
     {
         private IKitchenObjectParent kitchenObjectParent;
 
@@ -28,8 +29,8 @@ namespace ns
 
             //设置新字段
             kitchenObjectParent.SetKitchenObject(this);
-            transform.parent = kitchenObjectParent.GetHoldPointTransform();
-            transform.localPosition = Vector3.zero;
+            // transform.parent = kitchenObjectParent.GetHoldPointTransform();
+            //transform.localPosition = Vector3.zero;
         }
 
         public void DestroySelf()
@@ -57,13 +58,9 @@ namespace ns
             }
         }
 
-        public static KitchenObject SpwanKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
+        public static void SpwanKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
         {
-            Transform kitchenObjectInstance = Instantiate(kitchenObjectSO.prefab);
-            KitchenObject kitchenObject = kitchenObjectInstance.GetComponent<KitchenObject>();
-            kitchenObject.SetKitchenObjectParent(kitchenObjectParent);
-
-            return kitchenObject;
+            KitchenGameMultiplayer.Instance.SpwanKitchenObject(kitchenObjectSO, kitchenObjectParent);
         }
 
 

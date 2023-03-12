@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
@@ -7,8 +8,37 @@ using UnityEngine;
 /// </summary>
 namespace ns
 {
-    public class Testing : MonoBehaviour
+    public class Testing : NetworkBehaviour
     {
+        int testNum;
+        private void Update()
+        {
+            if (!IsOwner) return;
+
+            if (Input.GetKey(KeyCode.T))
+            {
+                TestServerRpc();
+            }
+            if (Input.GetKey(KeyCode.Y))
+            {
+                TestClientRpc();
+            }
+        }
+
+        [ServerRpc]
+        private void TestServerRpc()
+        {
+            print(OwnerClientId + " " + testNum);
+        }
+
+
+        [ClientRpc]
+        private void TestClientRpc()
+        {
+            print(OwnerClientId + " " + testNum);
+        }
+
+
 
     }
 

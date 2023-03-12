@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
@@ -53,5 +54,10 @@ namespace ns
         public void ClearKitchenObject() => kitchenObject = null;
 
         public bool HasKitchenObject() => kitchenObject != null;
+
+        public NetworkObject GetNetworkObject()
+        {
+            return null;
+        }
     }
 }

@@ -11,10 +11,10 @@ namespace ns
     {
         private void Awake()
         {
-
             BaseCounter.ResetStaticData();
             TrashCounter.ResetStaticData();
             CuttingCounter.ResetStaticData();
+            Player.ResetStaticData();
         }
     }
 }
