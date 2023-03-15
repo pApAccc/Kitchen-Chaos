@@ -35,7 +35,7 @@ namespace ns
         private void Update()
         {
             if (!IsServer) return;
-            if (GameManager.Instance.IsWaittingPlayer()) return;
+            if (GameManager.Instance.GetIsWaittingPlayer()) return;
 
             if (waittingRecipeList.Count == waittingRecipeMax) return;
 

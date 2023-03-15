@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,7 @@ namespace ns
 
             backMenuBtn.onClick.AddListener(() =>
             {
+                NetworkManager.Singleton.Shutdown();
                 Loader.LoadScene(Loader.SceneName.GameMenuScene);
             });
             optionsBtn.onClick.AddListener(() =>

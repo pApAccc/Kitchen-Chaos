@@ -26,7 +26,10 @@ namespace ns
             CountDownToStart,
             GamePlaying,
             GameOver
+
         }
+        private const int MAX_PLAYER_AMOUNT = 4;
+
         private NetworkVariable<State> state = new NetworkVariable<State>(State.WaittingPlayer);
         private float waittingToStartTimer = 1;
         private NetworkVariable<float> countDownToStartTimer = new NetworkVariable<float>(3);
@@ -38,6 +41,8 @@ namespace ns
 
         private Dictionary<ulong, bool> playerReadyDictionary;
         private Dictionary<ulong, bool> playerPausedDictionary;
+
+        [SerializeField] private Transform playerPrefab;
         private void Awake()
         {
             Instance = this;
@@ -51,12 +56,14 @@ namespace ns
         }
         public override void OnNetworkSpawn()
         {
+            //当游戏状态改变时
             state.OnValueChanged += (State previousState, State nowState) =>
             {
                 OnStateChanged?.Invoke(this, EventArgs.Empty);
             };
             gamePlayTimer.Value = gamePlayTimerMax;
 
+            //当游戏暂停状态改变时
             isGamePause.OnValueChanged += (bool previousValue, bool newValue) =>
             {
                 if (isGamePause.Value)
@@ -69,8 +76,31 @@ namespace ns
                     Time.timeScale = 1;
                     OnMultiplayerUnPause?.Invoke(this, EventArgs.Empty);
                 }
-
             };
+
+            if (IsServer)
+            {
+                NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+                NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+            }
+        }
+
+        private void NetworkManager_OnClientDisconnectCallback(ulong clientID)
+        {
+            //当有人断连时，检测游戏是否处于暂停状态
+            playerPausedDictionary.Remove(clientID);
+            CheckGameIsPause();
+        }
+
+        private void SceneManager_OnLoadEventCompleted(
+            string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode,
+            List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+        {
+            foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                Transform player = Instantiate(playerPrefab);
+                player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientID, true);
+            }
         }
         private void GameInput_OnPause(object sender, EventArgs e)
         {
@@ -213,6 +243,6 @@ namespace ns
 
         public bool GetIsLocalPlayerReady() => isLocalPlayerReady;
 
-        public bool IsWaittingPlayer() => state.Value == State.WaittingPlayer;
+        public bool GetIsWaittingPlayer() => state.Value == State.WaittingPlayer;
     }
 }

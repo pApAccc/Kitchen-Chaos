@@ -1,5 +1,7 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +17,8 @@ namespace ns
             GameScene,
             GameMenuScene,
             LoadingScene,
+            LobbyScene,
+            CharacterSelectScene
         }
 
         public static SceneName targetScene;
@@ -27,9 +31,28 @@ namespace ns
             SceneManager.LoadSceneAsync(SceneName.LoadingScene.ToString());
         }
 
-        public static IEnumerator LoadSceneCallback()
+        //public static IEnumerator LoadSceneCallback()
+        //{
+        //    yield return SceneManager.LoadSceneAsync(targetScene.ToString());
+        //}
+
+        public static void LoadSceneNetwork(SceneName targetScene)
         {
-            yield return SceneManager.LoadSceneAsync(targetScene.ToString());
+            if (SavingWrapper.Instance != null)
+                SavingWrapper.Instance.Save();
+            Loader.targetScene = targetScene;
+            NetworkManager.Singleton.SceneManager.LoadScene(targetScene.ToString(), LoadSceneMode.Single);
+        }
+
+        public static async void LoadSceneCallback()
+        {
+            await SceneManager.LoadSceneAsync(targetScene.ToString());
+        }
+
+        public static void LoadSceneNetworkWithLoadingScene(SceneName targetScene)
+        {
+            Loader.targetScene = targetScene;
+            NetworkManager.Singleton.SceneManager.LoadScene(SceneName.LoadingScene.ToString(), LoadSceneMode.Single);
         }
 
     }

@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 
@@ -15,6 +17,33 @@ namespace ns
         private void Awake()
         {
             Instance = this;
+
+            DontDestroyOnLoad(gameObject);
+        }
+
+        public void StartHost()
+        {
+            //开启主机前添加连接检测
+            NetworkManager.Singleton.ConnectionApprovalCallback += NetworManager_ConnectionApprovalCallback;
+            NetworkManager.Singleton.StartHost();
+        }
+
+        private void NetworManager_ConnectionApprovalCallback(
+            NetworkManager.ConnectionApprovalRequest connectionApprovalRequest,
+            NetworkManager.ConnectionApprovalResponse connectionApprovalResponse)
+        {
+            if (SceneManager.GetActiveScene().name != Loader.SceneName.CharacterSelectScene.ToString())
+            {
+                connectionApprovalResponse.Approved = false;
+
+            }
+
+
+        }
+
+        public void StartClient()
+        {
+            NetworkManager.Singleton.StartClient();
         }
 
         public void SpwanKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)

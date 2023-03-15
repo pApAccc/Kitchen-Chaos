@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 /// <summary>
 /// 
@@ -66,6 +65,18 @@ namespace ns
             }
             transform.position = spawnPosition[(int)OwnerClientId];
             OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
+
+            if (IsServer)
+                NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        }
+
+
+        private void NetworkManager_OnClientDisconnectCallback(ulong clientID)
+        {
+            if (clientID == OwnerClientId && HasKitchenObject())
+            {
+                KitchenObject.DestroyKitchenObject(GetKitchenObject());
+            }
         }
 
         private void Update()

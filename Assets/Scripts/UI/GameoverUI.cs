@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +19,11 @@ namespace ns
         {
             GameManager.Instance.OnStateChanged += GameMnagaer_OnStateChanged;
 
-            restartBtn.onClick.AddListener(() => { Loader.LoadScene(Loader.SceneName.GameScene); });
+            restartBtn.onClick.AddListener(() =>
+            {
+                NetworkManager.Singleton.Shutdown();
+                Loader.LoadScene(Loader.SceneName.GameScene);
+            });
             quitBtn.onClick.AddListener(() => { Application.Quit(); });
 
             Hide();

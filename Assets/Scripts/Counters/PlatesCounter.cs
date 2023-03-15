@@ -22,7 +22,7 @@ namespace ns
         private void Update()
         {
             if (!IsServer) return;
-            if (GameManager.Instance.IsWaittingPlayer()) return;
+            if (GameManager.Instance.GetIsWaittingPlayer()) return;
 
             spawnPlateTimer += Time.deltaTime;
             if (spawnPlateAmount < spawnPlateAmountMax)

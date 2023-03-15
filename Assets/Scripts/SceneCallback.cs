@@ -9,9 +9,9 @@ namespace ns
 {
     public class SceneCallback : MonoBehaviour
     {
-        private IEnumerator Start()
+        private void Start()
         {
-            yield return Loader.LoadSceneCallback();
+            Loader.LoadSceneCallback();
         }
     }
 }
