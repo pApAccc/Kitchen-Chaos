@@ -31,6 +31,8 @@ namespace ns
 
         [SerializeField] private PlayerAnimationController animatorController;
         [SerializeField] private Transform pickupPoint;
+        [SerializeField] private LayerMask collisionMask;
+        [SerializeField] private List<Vector3> spawnPosition;
 
 
         private void Start()
@@ -62,6 +64,7 @@ namespace ns
             {
                 LocalInstance = this;
             }
+            transform.position = spawnPosition[(int)OwnerClientId];
             OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
         }
 
@@ -78,18 +81,21 @@ namespace ns
             Vector3 moveDir = new Vector3(GameInput.Instance.GetMoveDirInput().x, 0, GameInput.Instance.GetMoveDirInput().y);
             isWalking = moveDir != Vector3.zero;
 
-
-            float playerHeight = 2f;
+            //float playerHeight = 2f;
             float playerRadius = .7f;
             float moveDistance = moveSpeed * Time.deltaTime;
-            bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir, moveDistance);
+            bool canMove = !Physics.BoxCast(
+                transform.position, Vector3.one * playerRadius, moveDir, Quaternion.identity, moveDistance, collisionMask
+                );
 
             //解决斜对角移动时，不能在x和z轴上移动
             if (!canMove)
             {
                 //尝试在x轴上移动
                 Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
-                canMove = (moveDir.x < -.5f || moveDir.x > .5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
+                canMove = (moveDir.x < -.5f || moveDir.x > .5f) && !Physics.BoxCast(
+                transform.position, Vector3.one * playerRadius, moveDirX, Quaternion.identity, moveDistance, collisionMask
+                    );
 
                 if (canMove)
                 {
@@ -99,7 +105,9 @@ namespace ns
                 {
                     //尝试在z轴上移动
                     Vector3 moveDirZ = new Vector3(0, 0, moveDir.z).normalized;
-                    canMove = (moveDir.z < -.5f || moveDir.z > .5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance);
+                    canMove = (moveDir.z < -.5f || moveDir.z > .5f) && !Physics.BoxCast(
+                transform.position, Vector3.one * playerRadius, moveDirZ, Quaternion.identity, moveDistance, collisionMask
+                        );
 
                     if (canMove)
                     {

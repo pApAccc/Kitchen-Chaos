@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2619378742872639279}
   - component: {fileID: 5832768715410547788}
   - component: {fileID: 1599914785913115379}
+  - component: {fileID: 4226563336178710933}
   m_Layer: 0
   m_Name: MeatPattyBurned
   m_TagString: Untagged
@@ -63,6 +64,18 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &4226563336178710933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2619378742872639276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1f7053f988c26d448592ee062328589, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4836037413994572162
 PrefabInstance:
   m_ObjectHideFlags: 0

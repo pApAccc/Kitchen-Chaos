@@ -1,5 +1,5 @@
 using System;
-
+using Unity.Netcode;
 using UnityEngine;
 
 
@@ -18,8 +18,21 @@ namespace ns
             if (!player.HasKitchenObject())
             {
                 KitchenObject.SpwanKitchenObject(kitchenObjectSO, player);
-                OnInteract?.Invoke(this, EventArgs.Empty);
+                InteractServerRpc();
+
             }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void InteractServerRpc()
+        {
+            InteractClientRpc();
+        }
+
+        [ClientRpc]
+        private void InteractClientRpc()
+        {
+            OnInteract?.Invoke(this, EventArgs.Empty);
         }
     }
 

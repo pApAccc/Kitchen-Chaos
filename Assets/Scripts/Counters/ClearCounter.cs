@@ -40,7 +40,7 @@ namespace ns
                     {
                         if (playerPlateObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
                         {
-                            GetKitchenObject().DestroySelf();
+                            KitchenGameMultiplayer.Instance.DestroyKitchenObject(GetKitchenObject());
                         }
                         else
                         {
@@ -54,7 +54,7 @@ namespace ns
                         {
                             if (playerPlateObject.TryAddIngredient(player.GetKitchenObject().GetKitchenObjectSO()))
                             {
-                                player.GetKitchenObject().DestroySelf();
+                                KitchenGameMultiplayer.Instance.DestroyKitchenObject(player.GetKitchenObject());
                             }
                             else
                             {

@@ -408,6 +408,22 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8478fb14a20abec4bb1e31474d95bef5, type: 2}
   - {fileID: 11400000, guid: a1fd99345cc62fb4faa7e1b04a1487ab, type: 2}
   - {fileID: 11400000, guid: ffa1e2c31ace290488f08719d432eb63, type: 2}
+--- !u!114 &-207682140564265724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7944472371762677821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!4 &7944472371762677822 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7256022649424028788, guid: 027ee35d009180f419ca15ee8e8957aa,

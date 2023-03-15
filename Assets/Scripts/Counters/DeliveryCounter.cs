@@ -21,7 +21,7 @@ namespace ns
                 if (player.GetKitchenObject().TryGetPlate(out PlateObject plateObject))
                 {
                     DeliveryManager.Instance.DeliverRecipe(plateObject);
-                    player.GetKitchenObject().DestroySelf();
+                    KitchenObject.DestroyKitchenObject(player.GetKitchenObject());
                 }
             }
         }

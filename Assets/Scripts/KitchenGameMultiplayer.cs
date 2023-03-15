@@ -46,5 +46,30 @@ namespace ns
         {
             return kitchenObjectListSO.kitchenObjectSOList[index];
         }
+
+        public void DestroyKitchenObject(KitchenObject kitchenObject)
+        {
+            DestroyKitchenObjectServerRpc(kitchenObject.NetworkObject);
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void DestroyKitchenObjectServerRpc(NetworkObjectReference kitchenObjectNetworkObjectReference)
+        {
+            kitchenObjectNetworkObjectReference.TryGet(out NetworkObject networkObject);
+            KitchenObject kitchenObject = networkObject.GetComponent<KitchenObject>();
+
+            ClearKitchenObjectOnParentClientRpc(kitchenObjectNetworkObjectReference);
+            kitchenObject.DestroySelf();
+        }
+
+        [ClientRpc]
+        private void ClearKitchenObjectOnParentClientRpc(NetworkObjectReference kitchenObjectNetworkObjectReference)
+        {
+            kitchenObjectNetworkObjectReference.TryGet(out NetworkObject networkObject);
+            KitchenObject kitchenObject = networkObject.GetComponent<KitchenObject>();
+
+            kitchenObject.CleraKitchenObjectOnParent();
+        }
+
     }
 }

@@ -65,7 +65,29 @@ PrefabInstance:
     - target: {fileID: 7851717545950331242, guid: a105e6bfc9490c84197d11e2274f55bb,
         type: 3}
       propertyPath: m_Name
-      value: ContainerCounter
+      value: ContainerCounter_CheeseBlock
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a105e6bfc9490c84197d11e2274f55bb, type: 3}
+--- !u!1 &4220267161200837592 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7851717545950331242, guid: a105e6bfc9490c84197d11e2274f55bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 6226086973758309042}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-3066657814866060442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4220267161200837592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1

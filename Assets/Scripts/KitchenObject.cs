@@ -11,9 +11,13 @@ namespace ns
     public class KitchenObject : NetworkBehaviour
     {
         private IKitchenObjectParent kitchenObjectParent;
+        private FollowTransform followTransform;
 
         [SerializeField] private KitchenObjectSO kitchenObjectSO;
-
+        protected virtual void Awake()
+        {
+            followTransform = GetComponent<FollowTransform>();
+        }
         public KitchenObjectSO GetKitchenObjectSO()
         {
             return kitchenObjectSO;
@@ -23,20 +27,38 @@ namespace ns
 
         public void SetKitchenObjectParent(IKitchenObjectParent kitchenObjectParent)
         {
+            SetKitchenObjectParentServerRpc(kitchenObjectParent.GetNetworkObject());
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void SetKitchenObjectParentServerRpc(NetworkObjectReference kitchenObjectParentNetworkObject)
+        {
+            SetKitchenObjectParentClientRpc(kitchenObjectParentNetworkObject);
+        }
+
+        [ClientRpc]
+        private void SetKitchenObjectParentClientRpc(NetworkObjectReference kitchenObjectParentNetworkObject)
+        {
+            kitchenObjectParentNetworkObject.TryGet(out NetworkObject networkObject);
+            IKitchenObjectParent kitchenObjectParent = networkObject.GetComponent<IKitchenObjectParent>();
+
             //设置旧字段
             this.kitchenObjectParent?.ClearKitchenObject();
             this.kitchenObjectParent = kitchenObjectParent;
 
             //设置新字段
             kitchenObjectParent.SetKitchenObject(this);
-            // transform.parent = kitchenObjectParent.GetHoldPointTransform();
-            //transform.localPosition = Vector3.zero;
+            followTransform.SetTargetTransform(kitchenObjectParent.GetHoldPointTransform());
         }
 
         public void DestroySelf()
         {
-            kitchenObjectParent.ClearKitchenObject();
             Destroy(gameObject);
+        }
+
+        public void CleraKitchenObjectOnParent()
+        {
+            kitchenObjectParent.ClearKitchenObject();
         }
 
         /// <summary>
@@ -61,6 +83,11 @@ namespace ns
         public static void SpwanKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
         {
             KitchenGameMultiplayer.Instance.SpwanKitchenObject(kitchenObjectSO, kitchenObjectParent);
+        }
+
+        public static void DestroyKitchenObject(KitchenObject kitchenObject)
+        {
+            KitchenGameMultiplayer.Instance.DestroyKitchenObject(kitchenObject);
         }
 
 
