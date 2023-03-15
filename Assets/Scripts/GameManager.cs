@@ -28,7 +28,6 @@ namespace ns
             GameOver
 
         }
-        private const int MAX_PLAYER_AMOUNT = 4;
 
         private NetworkVariable<State> state = new NetworkVariable<State>(State.WaittingPlayer);
         private float waittingToStartTimer = 1;
@@ -52,7 +51,6 @@ namespace ns
         private void Start()
         {
             GameInput.Instance.OnPause += GameInput_OnPause;
-            GameInput.Instance.OnInteract += Instance_OnInteract;
         }
         public override void OnNetworkSpawn()
         {
@@ -106,12 +104,6 @@ namespace ns
         {
             TogglePauseGame();
         }
-        private void Instance_OnInteract(object sender, EventArgs e)
-        {
-            isLocalPlayerReady = true;
-            OnLocalPlayerReady?.Invoke(this, EventArgs.Empty);
-            SetPlayerReadyServerRpc();
-        }
 
         [ServerRpc(RequireOwnership = false)]
         private void SetPlayerReadyServerRpc(ServerRpcParams serverRpcParams = default)
@@ -130,18 +122,18 @@ namespace ns
             if (isAllReady)
             {
                 state.Value = State.WaittingToStart;
-                SetPlayerReadyClientRpc();
             }
         }
 
-        [ClientRpc]
-        private void SetPlayerReadyClientRpc()
-        {
-            GameInput.Instance.OnInteract -= Instance_OnInteract;
-        }
 
         private void Update()
         {
+            if (!isLocalPlayerReady)
+            {
+                isLocalPlayerReady = true;
+                OnLocalPlayerReady?.Invoke(this, EventArgs.Empty);
+                SetPlayerReadyServerRpc();
+            }
             if (!IsServer) return;
 
             switch (state.Value)

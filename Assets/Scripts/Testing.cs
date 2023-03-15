@@ -8,35 +8,21 @@ using UnityEngine;
 /// </summary>
 namespace ns
 {
-    public class Testing : NetworkBehaviour
+    public class Testing : MonoBehaviour
     {
-        int testNum;
+        private void Awake()
+        {
+        }
+
         private void Update()
         {
-            if (!IsOwner) return;
-
-            if (Input.GetKey(KeyCode.T))
+            if (Input.GetKeyUp(KeyCode.T))
             {
-                TestServerRpc();
             }
-            if (Input.GetKey(KeyCode.Y))
-            {
-                TestClientRpc();
-            }
-        }
 
-        [ServerRpc]
-        private void TestServerRpc()
-        {
-            print(OwnerClientId + " " + testNum);
         }
 
 
-        [ClientRpc]
-        private void TestClientRpc()
-        {
-            print(OwnerClientId + " " + testNum);
-        }
 
 
 

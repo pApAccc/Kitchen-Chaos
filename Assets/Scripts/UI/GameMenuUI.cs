@@ -18,7 +18,7 @@ namespace ns
         {
             gameStartBtn.onClick.AddListener(() =>
             {
-                Loader.LoadScene(Loader.SceneName.GameScene);
+                Loader.LoadScene(Loader.SceneName.LobbyScene);
             });
 
             gameQuitBtn.onClick.AddListener(() =>

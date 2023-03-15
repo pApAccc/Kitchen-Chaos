@@ -12,12 +12,15 @@ namespace ns
 {
     public class KitchenGameMultiplayer : NetworkBehaviour
     {
+        private const int MAX_PLAYER_AMOUNT = 4;
+
+        public event EventHandler OnTrytoJoinGame;
+        public event EventHandler OnFailedtoJoinGame;
         public static KitchenGameMultiplayer Instance { get; private set; }
         [SerializeField] private KitchenObjectListSO kitchenObjectListSO;
         private void Awake()
         {
             Instance = this;
-
             DontDestroyOnLoad(gameObject);
         }
 
@@ -35,15 +38,29 @@ namespace ns
             if (SceneManager.GetActiveScene().name != Loader.SceneName.CharacterSelectScene.ToString())
             {
                 connectionApprovalResponse.Approved = false;
-
+                connectionApprovalResponse.Reason = "游戏已经开始了";
+                return;
             }
 
-
+            if (NetworkManager.Singleton.ConnectedClientsIds.Count > MAX_PLAYER_AMOUNT)
+            {
+                connectionApprovalResponse.Reason = "满员了";
+                return;
+            }
+            connectionApprovalResponse.Approved = true;
         }
 
         public void StartClient()
         {
+            OnTrytoJoinGame?.Invoke(this, EventArgs.Empty);
+
+            NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
             NetworkManager.Singleton.StartClient();
+        }
+
+        private void NetworkManager_OnClientDisconnectCallback(ulong obj)
+        {
+            OnFailedtoJoinGame?.Invoke(this, EventArgs.Empty);
         }
 
         public void SpwanKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
