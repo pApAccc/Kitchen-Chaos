@@ -63,7 +63,7 @@ namespace ns
             {
                 LocalInstance = this;
             }
-            transform.position = spawnPosition[(int)OwnerClientId];
+            transform.position = spawnPosition[KitchenGameMultiplayer.Instance.GetPlayerDataIndexFromClientID(OwnerClientId)];
             OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
 
             if (IsServer)

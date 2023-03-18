@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -11,6 +12,8 @@ namespace ns
     public class CharacterReady : NetworkBehaviour
     {
         public static CharacterReady Instance { get; private set; }
+
+        public event EventHandler OnReadyChanged;
 
         private Dictionary<ulong, bool> playerReadyDictionary;
 
@@ -28,7 +31,8 @@ namespace ns
         [ServerRpc(RequireOwnership = false)]
         private void SetPlayerReadyServerRpc(ServerRpcParams serverRpcParams = default)
         {
-            playerReadyDictionary.Add(serverRpcParams.Receive.SenderClientId, true);
+            SetPlayerReadyClientRpc(serverRpcParams.Receive.SenderClientId);
+            playerReadyDictionary[serverRpcParams.Receive.SenderClientId] = true;
             bool isAllReady = true;
 
             foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds)
@@ -41,8 +45,21 @@ namespace ns
             }
             if (isAllReady)
             {
+                KitchenGameLobby.Instance.DeleteLobby();
                 Loader.LoadSceneNetwork(Loader.SceneName.GameScene);
             }
+        }
+
+        [ClientRpc]
+        private void SetPlayerReadyClientRpc(ulong clientID)
+        {
+            playerReadyDictionary[clientID] = true;
+            OnReadyChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public bool GetPlayerIsReady(ulong clientID)
+        {
+            return playerReadyDictionary.ContainsKey(clientID) && playerReadyDictionary[clientID];
         }
     }
 }

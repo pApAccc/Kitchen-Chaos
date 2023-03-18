@@ -13,6 +13,14 @@ namespace ns
     {
         [SerializeField] private Button playAgainButton;
 
+        private void Awake()
+        {
+            playAgainButton.onClick.AddListener(() =>
+            {
+                Loader.LoadScene(Loader.SceneName.GameMenuScene);
+            });
+        }
+
         private void Start()
         {
             NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
@@ -36,6 +44,12 @@ namespace ns
         private void Hide()
         {
             gameObject.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            if (NetworkManager.Singleton != null)
+                NetworkManager.Singleton.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
         }
     }
 }

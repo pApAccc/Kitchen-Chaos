@@ -21,6 +21,11 @@ namespace ns
             {
                 Destroy(KitchenGameMultiplayer.Instance.gameObject);
             }
+
+            if (KitchenGameLobby.Instance != null)
+            {
+                Destroy(KitchenGameLobby.Instance.gameObject);
+            }
         }
     }
 }

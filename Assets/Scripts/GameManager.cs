@@ -33,10 +33,11 @@ namespace ns
         private float waittingToStartTimer = 1;
         private NetworkVariable<float> countDownToStartTimer = new NetworkVariable<float>(3);
         private NetworkVariable<float> gamePlayTimer = new NetworkVariable<float>(0);
-        private float gamePlayTimerMax = 600;
+        private float gamePlayTimerMax = 180;
         private bool isLocalGamePause = false;
         private NetworkVariable<bool> isGamePause = new NetworkVariable<bool>(false);
         private bool isLocalPlayerReady;
+        private bool isPlayerLeaveOnGameWaittingPlayer = false;
 
         private Dictionary<ulong, bool> playerReadyDictionary;
         private Dictionary<ulong, bool> playerPausedDictionary;
@@ -64,6 +65,7 @@ namespace ns
             //当游戏暂停状态改变时
             isGamePause.OnValueChanged += (bool previousValue, bool newValue) =>
             {
+
                 if (isGamePause.Value)
                 {
                     Time.timeScale = 0;
@@ -83,11 +85,20 @@ namespace ns
             }
         }
 
-        private void NetworkManager_OnClientDisconnectCallback(ulong clientID)
+        private void NetworkManager_OnClientDisconnectCallback(ulong disConnectedClientID)
         {
             //当有人断连时，检测游戏是否处于暂停状态
-            playerPausedDictionary.Remove(clientID);
-            CheckGameIsPause();
+            if (state.Value == State.GamePlaying && playerPausedDictionary.ContainsKey(disConnectedClientID))
+            {
+                playerPausedDictionary.Remove(disConnectedClientID);
+                CheckGameIsPause();
+            }
+
+            //进入游戏时断连,尝试开启游戏
+            if (state.Value == State.WaittingPlayer)
+            {
+                isPlayerLeaveOnGameWaittingPlayer = true;
+            }
         }
 
         private void SceneManager_OnLoadEventCompleted(
@@ -125,7 +136,6 @@ namespace ns
             }
         }
 
-
         private void Update()
         {
             if (!isLocalPlayerReady)
@@ -161,6 +171,32 @@ namespace ns
                     break;
                 case State.GameOver:
                     break;
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (isPlayerLeaveOnGameWaittingPlayer)
+            {
+                TryStartGameOnPlayerLeave();
+                isPlayerLeaveOnGameWaittingPlayer = false;
+            }
+        }
+
+        private void TryStartGameOnPlayerLeave()
+        {
+            bool isAllReady = true;
+            foreach (ulong clientID in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                if (!playerReadyDictionary.ContainsKey(clientID) || playerReadyDictionary[clientID] == false)
+                {
+                    isAllReady = false;
+                    break;
+                }
+            }
+            if (isAllReady)
+            {
+                state.Value = State.WaittingToStart;
             }
         }
 
